@@ -410,7 +410,8 @@
 (defun generate-static-page (pathname)
   (let ((meta (meta-data pathname)))
     (with-open-file (*web-stream* (merge-pathnames (make-pathname :type "xhtml") pathname)
-				  :if-exists :supersede :if-does-not-exist :create
+				  :if-exists :supersede
+				  :if-does-not-exist :create
 				  :direction :output)
       (with-standard-template (:title (meta-title meta) :lang (meta-lang meta))
 	(cl-markdown:markdown pathname
@@ -429,6 +430,51 @@
 ;;       (setq seq (make-string (file-length page-stream)))
 ;;       (read-sequence seq page-stream)
 ;;       )))
+
+(defun generate-google-sitemap (&optional (baseurl "http://www.students.uni-luebeck.de/~frahmo/"))
+  (labels ((loc (location)
+	     (with-html (:loc (str (conc baseurl location))))))
+    (with-open-file (*web-stream* "sitemap.xml"
+				  :if-exists :supersede
+				  :if-does-not-exist :create
+				  :direction :output)
+      (with-html-output (*web-stream* *web-stream* :prologue +decl-xml-10+)
+	(:urlset :xmlns "http://www.sitemaps.org/schemas/sitemap/0.9"
+		 :xmlns\:xsi "http://www.w3.org/2001/XMLSchema-instance"
+		 :xsi\:schemeLocation "http://www.sitemaps.org/schemas/sitemap/0.9
+http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+		 (:url (loc "blag-0.xhtml")
+		       (:lastmod "2009-02-28")
+		       (:changefreq "weekly")
+		       (:priority 1.0))
+		 (:url (loc "blag-1.xhtml")
+		       (:lastmod "2009-02-28")
+		       (:changefreq "weekly")
+		       (:priority 1.0))
+		 (:url (loc "blag-2.xhtml")
+		       (:lastmod "2009-02-28")
+		       (:changefreq "weekly")
+		       (:priority 1.0))
+		 (:url (loc "tags.xhtml")
+		       (:lastmod "2009-02-28")
+		       (:changefreq "weekly")
+		       (:priority 0.5))
+		 (:url (loc "timeline.xhtml")
+		       (:lastmod "2009-02-28")
+		       (:changefreq "weekly")
+		       (:priority 0.5))
+		 (:url (loc "university.xhtml")
+		       (:lastmod "2008-10-01")
+		       (:changefreq "never")
+		       (:priority 0.2))
+		 (:url (loc "contact.xhtml")
+		       (:lastmod "2008-10-01")
+		       (:changefreq "never")
+		       (:priority 0.2))
+		 (:url (loc "programming.xhtml")
+		       (:lastmod "2008-10-01")
+		       (:changefreq "never")
+		       (:priority 0.1)))))))
 
 (defun generate-static-pages ()
   (dolist (file (directory "*.md"))
