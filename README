@@ -1,0 +1,17 @@
+generate.lisp is a simple blog/website compiler
+===============================================
+
+Not much documentation at the moment, see the source.
+
+Uses anaphora, cl-who, puri, cl-markdown, local-time and cl-ppcre.
+Will additionally use parenscript, css-lite, puri and logv.
+
+Basically the directory structure should be something like this:
+
+/generate.{lisp,asd}, defpackage.lisp
+/posts/20090228-foo.md
+/media/bar.png
+
+with `20090228-foo.md` being the actual posts in Markdown format and
+`media` being the directory for additional files.  The rendered XHTML
+files will be in `/`.
